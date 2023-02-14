@@ -36,6 +36,16 @@ def get_city_id(city_id):
         return Response(status=404)
     return Response(city, status=200, mimetype='application/json')
 
+@app.route('/cities/<city_id>/groups')
+def get_cities_groups(city_id):
+    try:
+        city = dumps(collection.find_one({"city_id" : city_id}))
+        parsed_data = json.loads(city)
+        groups = parsed_data['groups']
+        return Response(json.dumps(groups), status=200, mimetype='application/json')
+    except:
+        return Response(status=404)
+
 @app.route('/cities/<city_id>/groups/<int:group_number>')
 def get_cities_group(city_id, group_number):
     city = dumps(collection.find_one({"city_id" : city_id}))

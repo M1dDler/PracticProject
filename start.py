@@ -30,13 +30,13 @@ async def handle_all_messages(message):
 
 @bot.callback_query_handler(func=lambda query: True)
 async def balance_calldata(query):
+    data = query.data.split('_')
         
-    if (query.data == "show_schedule_call"):
-        return
+    if data[0] == "schedule":
+        return await show_schedule(bot, query)
     
-    if (query.data == "show_notification_call"):
+    if query.data == "show_notification_call":
         return
-    
     
 
 keep_alive()
