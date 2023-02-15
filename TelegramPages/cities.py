@@ -48,7 +48,7 @@ async def findCityByTitle(bot, message):
 
 
 
-async def show_schedule(bot, query):
+async def show_schedule_on(bot, query):
     groups = getCitiesGroups(query)
     
     city_name = query.message.text.split("м.")
@@ -79,11 +79,86 @@ async def show_schedule(bot, query):
                 mass = [int(i) for i in x.split()]
                 mass.append(mass[len(mass)-1]+1)
                 text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
+    
+    
+    text_message = ('<b>✅ Погодинний розклад подачі електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+    
+    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    
+    
+    
+async def show_schedule_maybe(bot, query):
+    groups = getCitiesGroups(query)
+    
+    city_name = query.message.text.split("м.")
+    city_name = city_name[1].split(":")
+    city_name = city_name[0]
+    
+    text_schedule = ""
+    
+    for group in groups:
+        
+        for schedule in group['schedule']:
+            if schedule['light'] == 'maybe':
+               text_schedule += str(schedule['time'])+ " "
+            else:
+                text_schedule += "="
+            if group['schedule'].index(schedule) == len(group['schedule']) - 1 and not groups.index(group) == len(groups) - 1:
+                text_schedule += "\n" 
+             
+             
+    text_schedule = text_schedule.split("\n")
+    text = ""
+    
+    for period_of_time in text_schedule:
+        text += "⚡️ Черга №" + str(text_schedule.index(period_of_time)+1) + ":\n" 
+        period_of_time = period_of_time.split("=")
+        for x in period_of_time:
+            if not x == '':
+                mass = [int(i) for i in x.split()]
+                mass.append(mass[len(mass)-1]+1)
+                text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
                 
-                
-    print(text)
+    
+    text_message = ('<b>⚠️ Погодинний розклад можливого включення/виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+    
+    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    
+    
+    
+async def show_schedule_off(bot, query):
+    groups = getCitiesGroups(query)
+    
+    city_name = query.message.text.split("м.")
+    city_name = city_name[1].split(":")
+    city_name = city_name[0]
+    
+    text_schedule = ""
+    
+    for group in groups:
+        
+        for schedule in group['schedule']:
+            if schedule['light'] == 'off':
+               text_schedule += str(schedule['time'])+ " "
+            else:
+                text_schedule += "="
+            if group['schedule'].index(schedule) == len(group['schedule']) - 1 and not groups.index(group) == len(groups) - 1:
+                text_schedule += "\n" 
+             
+             
+    text_schedule = text_schedule.split("\n")
+    text = ""
+    
+    for period_of_time in text_schedule:
+        text += "⚡️ Черга №" + str(text_schedule.index(period_of_time)+1) + ":\n" 
+        period_of_time = period_of_time.split("=")
+        for x in period_of_time:
+            if not x == '':
+                mass = [int(i) for i in x.split()]
+                mass.append(mass[len(mass)-1]+1)
+                text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
         
     
-    text_message = ('<b>Погодинний розклад подачі електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+    text_message = ('<b>❌ Погодинний розклад виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
     
     await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')

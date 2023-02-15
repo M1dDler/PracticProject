@@ -33,7 +33,10 @@ async def balance_calldata(query):
     data = query.data.split('_')
         
     if data[0] == "schedule":
-        return await show_schedule(bot, query)
+        await show_schedule_on(bot, query)
+        await show_schedule_maybe(bot, query)
+        return await show_schedule_off(bot, query)
+    
     
     if query.data == "show_notification_call":
         return
