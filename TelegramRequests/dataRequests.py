@@ -20,7 +20,6 @@ def getCityByTitle(message):
             return city
     return None
 
-
 def getCitiesGroups(query):
     query_text = query.data.split('_')
     query_text = query_text[1]
@@ -30,3 +29,21 @@ def getCitiesGroups(query):
     url = base_url + end_point
     groups = requests.get(url=url).json()
     return groups
+
+def postNotifications(telegram_id, city_id, city_group):
+    base_url = os.getenv("DATABASEURL")
+    end_point = '/notifications/'+telegram_id+'/'+city_id+'/'+city_group
+    
+    url = base_url + end_point
+    response = requests.post(url=url)
+    
+    return response.status_code 
+
+def deleteNotifications(telegram_id):
+    base_url = os.getenv("DATABASEURL")
+    end_point = '/notifications/'+telegram_id
+    
+    url = base_url + end_point
+    response = requests.delete(url=url)
+    
+    return response.status_code 

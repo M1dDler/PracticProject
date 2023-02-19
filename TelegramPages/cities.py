@@ -162,3 +162,23 @@ async def show_schedule_off(bot, query):
     text_message = ('<b>❌ Погодинний розклад виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
     
     await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    
+
+async def notification(bot, query):
+    city_id  = query.data.split("_") 
+    city_id = city_id[1]
+    markup = types.InlineKeyboardMarkup(row_width=5)
+    one_btn = types.InlineKeyboardButton("1️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_1")
+    two_btn = types.InlineKeyboardButton("2️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_2")
+    three_btn = types.InlineKeyboardButton("3️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_3")
+    four_btn = types.InlineKeyboardButton("4️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_4")
+    five_btn = types.InlineKeyboardButton("5️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_5")
+    six_btn = types.InlineKeyboardButton("6️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_6")
+    seven_btn = types.InlineKeyboardButton("7️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_7")
+    eight_btn = types.InlineKeyboardButton("8️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_8")
+    nine_btn = types.InlineKeyboardButton("9️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_9")
+    ten_btn = types.InlineKeyboardButton("🔟", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_10")
+    delete_btn = types.InlineKeyboardButton("Вимкнути наявні сповіщення 🔇", callback_data="delete_group_"+str(query.from_user.id))
+    markup.add(one_btn, two_btn, three_btn, four_btn, five_btn, six_btn, seven_btn, eight_btn, nine_btn, ten_btn, delete_btn)
+    return await bot.send_message(query.from_user.id, "Оберіть номер черги для отримання сповіщення 🔖", reply_markup=markup)
+    

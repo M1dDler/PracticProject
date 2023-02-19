@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
 from TelegramPages.mainpage import *
 from TelegramPages.cities import *
+from TelegramRequests.dataRequests import *
 
 load_dotenv()
 token = os.getenv("BOTTOKEN")
@@ -37,10 +38,20 @@ async def balance_calldata(query):
         await show_schedule_maybe(bot, query)
         return await show_schedule_off(bot, query)
     
+    if data[0] == "notification":
+        return await notification(bot, query)
     
-    if query.data == "show_notification_call":
-        return
+    if data[0] == "group":
+        telegram_id = data[1]
+        city_id = data[2]
+        city_group = data[3]
+        postNotifications(telegram_id, city_id, city_group)
+        return await bot.send_message(query.from_user.id, "Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!")
     
-
+    if data[0] == "delete" and data[1] == "group":
+        telegram_id = data[2]
+        deleteNotifications(telegram_id)
+        return await bot.send_message(query.from_user.id, "Сповіщення вимкнуто!")   
+        
 keep_alive()
 asyncio.run(bot.infinity_polling())
