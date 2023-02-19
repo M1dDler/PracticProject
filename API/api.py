@@ -38,7 +38,7 @@ def post_notifications(telegram_id, city_id, city_group):
     result = notifications.insert_one(data)
     return Response(status=200, mimetype='application/json')
 
-@app.route('/notifications')
+@app.route('/notifications', methods=['POST'])
 def get_notifications():
     apikey = os.getenv("APIKEY")
     
