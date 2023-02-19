@@ -32,18 +32,32 @@ def getCitiesGroups(query):
 
 def postNotifications(telegram_id, city_id, city_group):
     base_url = os.getenv("APIURL")
+    apikey = os.getenv("APIKEY")
+    
+    headers = headers = {
+                "Authorization": f"API-KEY {apikey}",
+                'Content-Type': "application/json",
+            }
+    
     end_point = '/notifications/'+telegram_id+'/'+city_id+'/'+city_group
     
     url = base_url + end_point
-    response = requests.post(url=url)
+    response = requests.post(url=url, headers=headers)
     
     return response.status_code 
 
 def deleteNotifications(telegram_id):
     base_url = os.getenv("APIURL")
+    apikey = os.getenv("APIKEY")
+    
+    headers = headers = {
+                "Authorization": f"API-KEY {apikey}",
+                'Content-Type': "application/json",
+            }
+    
     end_point = '/notifications/'+telegram_id
     
     url = base_url + end_point
-    response = requests.delete(url=url)
+    response = requests.delete(url=url, headers=headers)
     
     return response.status_code 

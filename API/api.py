@@ -7,27 +7,34 @@ import datetime
 import json
 import os
 import requests
-import asyncio
+import pytz
 
 load_dotenv()
 
 global client
 
-dataBaseUrl = os.getenv("DATABASEURL")
+dataBaseUrl = os.getenv("DATABASEURLD")
 client = MongoClient(dataBaseUrl)
 client.server_info()
 db = client["Dtek"]
 settlements = db["settlements"]
 notifications = db["notifications"]
+apikey = os.getenv("APIKEY")
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello, World!"
+    return Response(status=200, mimetype='application/json')
 
 @app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
 def post_notifications(telegram_id, city_id, city_group):
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
     
     data = {
              "telegram_id": telegram_id,
@@ -40,8 +47,6 @@ def post_notifications(telegram_id, city_id, city_group):
 
 @app.route('/notifications', methods=['POST'])
 def get_notifications():
-    apikey = os.getenv("APIKEY")
-    
     try:
         token = request.headers['Authorization'].split(" ")
         if not token[1] == apikey:
@@ -56,11 +61,18 @@ def get_notifications():
     
     result = list(notifications.find())
     cities = requests.get(url=databaseUrl+'/cities').json()
-    current_time = str(datetime.datetime.now().time())
-    current_time = current_time.split(":")
-    current_time = int(current_time[0])
-    if current_time == 00:
-        current_time = 0
+    
+    now_utc = datetime.datetime.now(pytz.UTC)
+    
+    gmt2 = pytz.timezone('Etc/GMT-2')
+    now_gmt2 = now_utc.astimezone(gmt2)
+    current_time = now_gmt2.strftime('%H')
+    
+    if current_time[0] == "0":
+        current_time = current_time.replace(current_time, current_time[1])
+
+    current_time = int(current_time)
+    
     
     for x in result:
         
@@ -102,16 +114,33 @@ def get_notifications():
         
         requests.post(url=url, data=data)
     
-    return Response(dumps(result), status=200, mimetype='application/json')
+    return Response(status=200, mimetype='application/json')
 
 
 @app.route('/notifications/<int:telegram_id>', methods=['DELETE'])
 def delete_notifications(telegram_id):
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
+    
+    deletedata = dumps(notifications.find({"telegram_id": telegram_id}))
+    if deletedata == "[]":
+        return Response(status=404, mimetype='application/json')
     notifications.delete_many({"telegram_id": telegram_id})
     return Response(status=200, mimetype='application/json')
 
 @app.route('/post', methods=['POST'])
 def post():
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
+    
     data = request.json
     result = settlements.insert_one(data)
     return Response(status=200, mimetype='application/json')
@@ -153,6 +182,7 @@ def get_cities_group(city_id, group_number):
      
 def run():
     app.run(host='0.0.0.0', port=80)
+ 
  
 def keep_alive():
     t = Thread(target=run)

@@ -46,12 +46,14 @@ async def balance_calldata(query):
         city_id = data[2]
         city_group = data[3]
         postNotifications(telegram_id, city_id, city_group)
-        return await bot.send_message(query.from_user.id, "Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!")
+        return await bot.send_message(query.from_user.id, "🔊 Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!")
     
     if data[0] == "delete" and data[1] == "group":
         telegram_id = data[2]
-        deleteNotifications(telegram_id)
-        return await bot.send_message(query.from_user.id, "Сповіщення вимкнуто!")   
+        statusCode = deleteNotifications(telegram_id)
+        if statusCode == 200:
+            return await bot.send_message(query.from_user.id, "🔇 Всі наявні сповіщення вимкнуто!")
+        return await bot.send_message(query.from_user.id, "ℹ️ Активних сповіщень не виявлено!")  
         
 keep_alive()
 asyncio.run(bot.infinity_polling())
