@@ -52,7 +52,7 @@ def get_notifications():
     
     token = os.getenv("BOTTOKEN")
     url = 'https://api.telegram.org/bot'+token+'/sendMessage'
-    databaseUrl = os.getenv("DATABASEURL")
+    databaseUrl = os.getenv("APIURL")
     
     result = list(notifications.find())
     cities = requests.get(url=databaseUrl+'/cities').json()
