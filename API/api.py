@@ -10,7 +10,8 @@ import asyncio
 
 global client
 
-client = MongoClient('localhost', 27017)
+dataBaseUrl = os.getenv("DATABASEURL")
+client = MongoClient(dataBaseUrl)
 client.server_info()
 db = client["Dtek"]
 settlements = db["settlements"]
