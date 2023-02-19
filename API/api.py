@@ -87,7 +87,13 @@ def get_notifications():
         filter_schedule_current = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time]
         if len(filter_schedule_current) == 0:
             continue 
-        filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time + 1]
+        
+        
+        if not current_time == 23: 
+            filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time + 1]
+        else:
+            filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == 0]
+            
         
         if filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "off":
              text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
