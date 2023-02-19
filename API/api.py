@@ -2,11 +2,14 @@ from pymongo import MongoClient
 from flask import Flask, request, Response
 from bson.json_util import dumps
 from threading import Thread
+from dotenv import load_dotenv
 import datetime
 import json
 import os
 import requests
 import asyncio
+
+load_dotenv()
 
 global client
 
