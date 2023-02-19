@@ -13,7 +13,7 @@ load_dotenv()
 
 global client
 
-dataBaseUrl = os.getenv("DATABASEURLD")
+dataBaseUrl = os.getenv("DATABASEURL")
 client = MongoClient(dataBaseUrl)
 client.server_info()
 db = client["Dtek"]
