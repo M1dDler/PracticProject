@@ -3,6 +3,7 @@ from flask import Flask, request, Response
 from bson.json_util import dumps
 from threading import Thread
 from dotenv import load_dotenv
+from waitress import serve
 import datetime
 import json
 import os
@@ -185,10 +186,9 @@ def get_cities_group(city_id, group_number):
         if group['group'] == group_number:
             return Response(json.dumps(group), status=200, mimetype='application/json')
     return Response(status=404)
-     
+    
 def run():
-    app.run(host='0.0.0.0', port=80)
- 
+    serve(app, host="0.0.0.0", port=80)
  
 def keep_alive():
     t = Thread(target=run)

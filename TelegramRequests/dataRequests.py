@@ -16,7 +16,7 @@ def getCityByTitle(message):
     cities = requests.get(url=url).json()
     
     for city in cities:
-        if city['city_name'] == message.text:
+        if city['city_name'].lower() == message.text.lower():
             return city
     return None
 

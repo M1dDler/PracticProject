@@ -1,7 +1,6 @@
 import telebot
 import asyncio
 import os
-import json
 from API.api import keep_alive
 from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
@@ -46,14 +45,14 @@ async def balance_calldata(query):
         city_id = data[2]
         city_group = data[3]
         postNotifications(telegram_id, city_id, city_group)
-        return await bot.send_message(query.from_user.id, "🔊 Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!")
+        return await bot.send_message(query.from_user.id, "🔊 Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!", timeout=30)
     
     if data[0] == "delete" and data[1] == "group":
         telegram_id = data[2]
         statusCode = deleteNotifications(telegram_id)
         if statusCode == 200:
-            return await bot.send_message(query.from_user.id, "🔇 Всі наявні сповіщення вимкнуто!")
-        return await bot.send_message(query.from_user.id, "ℹ️ Активних сповіщень не виявлено!")  
+            return await bot.send_message(query.from_user.id, "🔇 Всі наявні сповіщення вимкнуто!", timeout=30)
+        return await bot.send_message(query.from_user.id, "ℹ️ Активних сповіщень не виявлено!", timeout=30)  
         
 keep_alive()
 asyncio.run(bot.infinity_polling())

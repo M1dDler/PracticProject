@@ -8,12 +8,12 @@ async def cities(bot, message):
     cities = getCities()
     
     if len(cities) == 0:
-        return await bot.send_message(message.from_user.id, "В списку немає жодного населеного пункту! 😣")
+        return await bot.send_message(message.from_user.id, "В списку немає жодного населеного пункту! 😣", timeout=30)
     
     text_message = "<b>Інформація про подачу електроенергії доступна для таких міст:</b> ⤵️\n\n" + "\n".join(str('📌 '+x['city_name']) for x in cities)
     await bot.send_message(chat_id=message.from_user.id, text=text_message +'\n\n'+
                            'Для відображення детальної інформації введіть в чат назву населеного пункту ✏️'
-                           ,parse_mode='HTML')
+                           ,parse_mode='HTML', timeout=30)
     
     
 async def findCityByTitle(bot, message):
@@ -21,7 +21,7 @@ async def findCityByTitle(bot, message):
     
     if city == None:
         return await bot.send_message (message.from_user.id, 'Вказаного вами населеного пункту, не знайдено! 🙄\n'
-                                       + 'Для перегляду списку всіх населених пунктів скористайтесь контекстним меню ⬇️')
+                                       + 'Для перегляду списку всіх населених пунктів скористайтесь контекстним меню ⬇️', timeout=30)
     
     now_utc = datetime.datetime.now(pytz.UTC)
     
@@ -57,7 +57,7 @@ async def findCityByTitle(bot, message):
                     "⚡️ Кількість черг: - "+str(len(city['groups'])) +"\n"+
                     "❕ Станом на "+current_time+", статус електромережі в \n"+"\n".join('=== '+str(light_status_groups.index(x)+1)+' - ій черзі: '+ x for x in light_status_groups))
     
-    return await bot.send_message(message.from_user.id, text_message, reply_markup=markup)
+    return await bot.send_message(message.from_user.id, text_message, reply_markup=markup, timeout=30)
 
 
 
@@ -96,7 +96,7 @@ async def show_schedule_on(bot, query):
     
     text_message = ('<b>✅ Погодинний розклад подачі електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
     
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
     
     
     
@@ -135,7 +135,7 @@ async def show_schedule_maybe(bot, query):
     
     text_message = ('<b>⚠️ Погодинний розклад можливого включення/виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
     
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
     
     
     
@@ -174,7 +174,7 @@ async def show_schedule_off(bot, query):
     
     text_message = ('<b>❌ Погодинний розклад виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
     
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML')
+    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
     
 
 async def notification(bot, query):
@@ -201,5 +201,5 @@ async def notification(bot, query):
         
     markup.row(*row_buttons)
     markup.add(delete_btn)
-    return await bot.send_message(query.from_user.id, "Оберіть номер черги для отримання сповіщення 🔖", reply_markup=markup)
+    return await bot.send_message(query.from_user.id, "Оберіть номер черги для отримання сповіщення 🔖", reply_markup=markup, timeout=30)
     
