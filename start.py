@@ -44,8 +44,10 @@ async def balance_calldata(query):
         telegram_id = data[1]
         city_id = data[2]
         city_group = data[3]
-        postNotifications(telegram_id, city_id, city_group)
-        return await bot.send_message(query.from_user.id, "🔊 Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!", timeout=30)
+        statusCode = postNotifications(telegram_id, city_id, city_group)
+        if statusCode == 200:
+            return await bot.send_message(query.from_user.id, "🔊 Ви включили сповіщення по подачі електроенергії для "+str(city_group)+"-ї групи!", timeout=30)
+        return await bot.send_message(query.from_user.id, "ℹ️ Помилка! Сповіщення для даної групи заданого міста вже увімкнуто!")
     
     if data[0] == "delete" and data[1] == "group":
         telegram_id = data[2]
