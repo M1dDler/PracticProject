@@ -76,51 +76,54 @@ def get_notifications():
     
     
     for x in result:
-        
-        text = " "
-        
-        filter_city = [city for city in cities if city["city_id"] == x["city_id"]]
-        if len(filter_city) == 0:
-            continue
-        filter_group = [group for group in filter_city[0]["groups"] if group["group"] == x["city_group"]]
-        if len(filter_group) == 0:
-            continue
-        filter_schedule_current = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time]
-        if len(filter_schedule_current) == 0:
-            continue 
-        
-        
-        if not current_time == 23: 
-            filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time + 1]
-        else:
-            filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == 0]
+        try:
+            text = " "
             
-        
-        if filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "off":
-             text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
-        
-        elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "on":
-             text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається включення електроенергії 😊")
+            filter_city = [city for city in cities if city["city_id"] == x["city_id"]]
+            if len(filter_city) == 0:
+                continue
+            filter_group = [group for group in filter_city[0]["groups"] if group["group"] == x["city_group"]]
+            if len(filter_group) == 0:
+                continue
+            filter_schedule_current = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time]
+            if len(filter_schedule_current) == 0:
+                continue 
+            
+            
+            if not current_time == 23: 
+                filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time + 1]
+            else:
+                filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == 0]
+                
+            
+            if filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "off":
+                text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
+            
+            elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "on":
+                text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається включення електроенергії 😊")
 
-        elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "on":
-             text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається 100%-ва подача електроенергії 😁")
-        
-        elif filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "maybe":
-             text = "⚠️❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе виключення електроенергії 😏"
-             
-        elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "maybe":
-             text = "⚠️✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе включення електроенергії 😇"
-        
-        elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "off":
-             text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
-             
-        data = {
-                 "chat_id": x["telegram_id"],
-                 "text": text
-               }
-        
-        requests.post(url=url, data=data)
-    
+            elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "on":
+                text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається 100%-ва подача електроенергії 😁")
+            
+            elif filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "maybe":
+                text = "⚠️❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе виключення електроенергії 😏"
+                
+            elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "maybe":
+                text = "⚠️✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе включення електроенергії 😇"
+            
+            elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "off":
+                text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
+                
+            data = {
+                    "chat_id": x["telegram_id"],
+                    "text": text
+                }
+            
+            requests.post(url=url, data=data)
+            
+        except:
+            continue
+
     return Response(status=200, mimetype='application/json')
 
 
