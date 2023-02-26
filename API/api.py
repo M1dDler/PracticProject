@@ -14,7 +14,7 @@ load_dotenv()
 
 global client
 
-dataBaseUrl = os.getenv("DATABASEURD")
+dataBaseUrl = os.getenv("DATABASEURL")
 client = MongoClient(dataBaseUrl)
 client.server_info()
 db = client["Dtek"]
@@ -48,7 +48,6 @@ def post_notifications(telegram_id, city_id, city_group):
     if findData == None:
         result = notifications.insert_one(data)
         return Response(status=200, mimetype='application/json')
-    print(findData)
     return Response(status=406, mimetype='application/json')
 
 @app.route('/notifications', methods=['POST'])

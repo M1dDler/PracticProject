@@ -25,7 +25,7 @@ async def findCityByTitle(bot, message):
     
     now_utc = datetime.datetime.now(pytz.UTC)
     
-    gmt2 = pytz.timezone('Etc/GMT-2')
+    gmt2 = pytz.timezone('Etc/GMT-1')
     now_gmt2 = now_utc.astimezone(gmt2)
     current_time = now_gmt2.strftime('%H:%M:%S')
     
@@ -47,7 +47,7 @@ async def findCityByTitle(bot, message):
                 elif str(x['light']) == 'off':
                     status = 'Вимкнено ❌'
                 light_status_groups.append(status)
-            
+    
     markup = types.InlineKeyboardMarkup(row_width=2)
     show_schedule_btn = types.InlineKeyboardButton("⏱ Розклад", callback_data = "schedule_"+str(city['city_id']))
     show_notification_btn = types.InlineKeyboardButton("🔊 Сповіщення", callback_data = "notification_"+str(city['city_id']))
@@ -55,7 +55,7 @@ async def findCityByTitle(bot, message):
             
     text_message = ("📋 Інформація щодо подачі електроенергії у м."+city['city_name']+":\n"+
                     "⚡️ Кількість черг: - "+str(len(city['groups'])) +"\n"+
-                    "❕ Станом на "+current_time+", статус електромережі в \n"+"\n".join('=== '+str(light_status_groups.index(x)+1)+' - ій черзі: '+ x for x in light_status_groups))
+                    "❕ Станом на "+current_time+", статус електромережі в \n"+"\n".join('=== '+str(x+1)+' - ій черзі: '+ str(light_status_groups[x]) for x in range(len(light_status_groups))))
     
     return await bot.send_message(message.from_user.id, text_message, reply_markup=markup, timeout=30)
 
