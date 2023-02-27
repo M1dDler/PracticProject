@@ -131,8 +131,8 @@ def get_notifications():
     return Response(status=200, mimetype='application/json')
 
 
-@app.route('/notifications/<int:telegram_id>', methods=['DELETE'])
-def delete_notifications(telegram_id):
+@app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['DELETE'])
+def delete_notifications(telegram_id, city_id, city_group):
     try:
         token = request.headers['Authorization'].split(" ")
         if not token[1] == apikey:
@@ -140,10 +140,16 @@ def delete_notifications(telegram_id):
     except:
         return Response(status=403, mimetype='application/json')
     
-    deletedata = dumps(notifications.find({"telegram_id": telegram_id}))
+    deletedata = dumps(notifications.find({"telegram_id": telegram_id,
+                                          "city_id": city_id,
+                                          "city_group": city_group}))
+    
     if deletedata == "[]":
         return Response(status=404, mimetype='application/json')
-    notifications.delete_many({"telegram_id": telegram_id})
+    notifications.delete_many({"telegram_id": telegram_id,
+                                "city_id": city_id,
+                                "city_group": city_group})
+    
     return Response(status=200, mimetype='application/json')
 
 @app.route('/post', methods=['POST'])
