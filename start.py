@@ -43,12 +43,19 @@ async def balance_calldata(query):
         city = getCityById(city_id)
         
         markup = types.InlineKeyboardMarkup(row_width=1)
+        show_notifications_btn = types.InlineKeyboardButton("🔈 Мої активні сповіщення", callback_data = "InfNotification_"+str(query.from_user.id)+"_"+str(city_id))
         on_btn = types.InlineKeyboardButton("🔊 Увімкнути  сповіщення для м."+city['city_name'], callback_data = "OnNotification_"+str(city_id))
         off_btn = types.InlineKeyboardButton("🔇 Вимкнути  сповіщення для м."+city['city_name'], callback_data="OffNotification_"+str(query.from_user.id)+"_"+str(city_id))
         
-        markup.add(on_btn, off_btn)
+        markup.add(show_notifications_btn, on_btn, off_btn)
         
         return await bot.send_message(query.from_user.id, "Оберіть те, що вас цікавить ⤵️", reply_markup=markup)
+        
+    if data[0] == "InfNotification":
+        city = getCityById(data[2])    
+        notifications = getNotifications(data[1], data[2])
+        text = "<b>Список активних сповіщень для м." + city['city_name'] + "⤵️\n\n</b>"+"\n".join(str('📌 Черга - №'+str(x['city_group'])) for x in notifications)
+        return await bot.send_message(query.from_user.id, text, parse_mode='HTML')
         
     if data[0] == "OnNotification":
         city_id = data[1]

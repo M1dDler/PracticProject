@@ -17,7 +17,13 @@ async def cities(bot, message):
     
     
 async def findCityByTitle(bot, message):
-    city = getCityByTitle(message)
+    cities = getCities()
+    city = None
+    
+    for x in cities:
+        if x['city_name'].lower() == message.text.lower():
+            city = x
+            break
     
     if city == None:
         return await bot.send_message (message.from_user.id, 'Вказаного вами населеного пункту, не знайдено! 🙄\n'
@@ -62,7 +68,11 @@ async def findCityByTitle(bot, message):
 
 
 async def show_schedule_on(bot, query):
-    groups = getCitiesGroups(query)
+    city_id = query.data.split('_')
+    city_id = city_id[1]
+    
+    city = getCityById(city_id)
+    groups = city['groups']
     
     city_name = query.message.text.split("м.")
     city_name = city_name[1].split(":")
@@ -101,7 +111,11 @@ async def show_schedule_on(bot, query):
     
     
 async def show_schedule_maybe(bot, query):
-    groups = getCitiesGroups(query)
+    city_id = query.data.split('_')
+    city_id = city_id[1]
+    
+    city = getCityById(city_id)
+    groups = city['groups']
     
     city_name = query.message.text.split("м.")
     city_name = city_name[1].split(":")
@@ -140,7 +154,11 @@ async def show_schedule_maybe(bot, query):
     
     
 async def show_schedule_off(bot, query):
-    groups = getCitiesGroups(query)
+    city_id = query.data.split('_')
+    city_id = city_id[1]
+    
+    city = getCityById(city_id)
+    groups = city['groups']
     
     city_name = query.message.text.split("м.")
     city_name = city_name[1].split(":")

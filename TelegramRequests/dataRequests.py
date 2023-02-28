@@ -1,7 +1,8 @@
 import requests
 import os
-import json
+from cachetools import cached, TTLCache
 
+@cached(cache=TTLCache(maxsize=100, ttl=3600))
 def getCities():
     base_url = os.getenv("APIURL")
     end_point = '/cities'
@@ -9,33 +10,29 @@ def getCities():
     cities = requests.get(url=url).json()
     return cities
 
-def getCityByTitle(message):
-    base_url = os.getenv("APIURL")
-    end_point = '/cities'
-    url = base_url + end_point
-    cities = requests.get(url=url).json()
-    
-    for city in cities:
-        if city['city_name'].lower() == message.text.lower():
-            return city
-    return None
-
-def getCitiesGroups(query):
-    query_text = query.data.split('_')
-    query_text = query_text[1]
-    
-    base_url = os.getenv("APIURL")
-    end_point = '/cities/'+query_text+'/groups'
-    url = base_url + end_point
-    groups = requests.get(url=url).json()
-    return groups
-
+@cached(cache=TTLCache(maxsize=100, ttl=3600))
 def getCityById(city_id):
     base_url = os.getenv("APIURL")
     end_point = '/cities/'+city_id
     url = base_url + end_point
     city = requests.get(url=url).json()
     return city
+    
+def getNotifications(telegram_id, city_id):
+    base_url = os.getenv("APIURL")
+    apikey = os.getenv("APIKEY")
+    
+    headers = headers = {
+                "Authorization": f"API-KEY {apikey}",
+                'Content-Type': "application/json",
+            }
+    
+    end_point = '/notifications/'+telegram_id+"/"+city_id
+    
+    url = base_url + end_point
+    notifications = requests.get(url=url, headers=headers).json()
+    
+    return notifications
     
 
 def postNotifications(telegram_id, city_id, city_group):

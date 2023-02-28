@@ -29,7 +29,7 @@ def hello():
     return Response(status=200, mimetype='application/json')
 
 @app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
-def post_notifications(telegram_id, city_id, city_group):
+def post_notification(telegram_id, city_id, city_group):
     try:
         token = request.headers['Authorization'].split(" ")
         if not token[1] == apikey:
@@ -51,7 +51,7 @@ def post_notifications(telegram_id, city_id, city_group):
     return Response(status=406, mimetype='application/json')
 
 @app.route('/notifications', methods=['POST'])
-def get_notifications():
+def post_notifications():
     try:
         token = request.headers['Authorization'].split(" ")
         if not token[1] == apikey:
@@ -131,6 +131,20 @@ def get_notifications():
     return Response(status=200, mimetype='application/json')
 
 
+@app.route('/notifications/<int:telegram_id>/<city_id>')
+def get_user_notifications(telegram_id, city_id):
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
+    
+    result = dumps(notifications.find({"telegram_id": telegram_id,
+                                       "city_id": city_id }))
+
+    return Response(result, status=200, mimetype='application/json')
+
 @app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['DELETE'])
 def delete_notifications(telegram_id, city_id, city_group):
     try:
@@ -162,7 +176,7 @@ def post():
         return Response(status=403, mimetype='application/json')
     
     data = request.json
-    result = settlements.insert_one(data)
+    settlements.insert_one(data)
     return Response(status=200, mimetype='application/json')
 
 @app.route('/cities')
