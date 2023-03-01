@@ -60,6 +60,12 @@ def get_photolinks():
 @app.route('/photolinks/<id>', methods=['PUT'])
 def put_photolink_add(id):
     try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
+    try:
         data = request.json
         
         photolinks_list = []
@@ -79,6 +85,12 @@ def put_photolink_add(id):
 
 @app.route('/photolinks/delete/<id>', methods=['PUT'])
 def put_photolink_delete(id):
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
     try:
         data = request.json
         
