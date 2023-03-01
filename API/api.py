@@ -32,23 +32,6 @@ app = Flask(__name__)
 def hello():
     return Response(status=200, mimetype='application/json')
 
-@app.route('/photolinks', methods=['POST'])
-def post_photolinks():
-    try:
-        token = request.headers['Authorization'].split(" ")
-        if not token[1] == apikey:
-            return Response(status=403, mimetype='application/json')
-    except:
-        return Response(status=403, mimetype='application/json')
-    
-    data = request.json
-    photolinks_data = photolinks.find()
-    
-    if photolinks_data == "[]":
-        photolinks.insert_one(data)
-        return Response(status=200, mimetype='application/json')
-    return Response(status=400, mimetype='application/json')
-
 @app.route('/photolinks')
 def get_photolinks():
     result = dumps(photolinks.find())
