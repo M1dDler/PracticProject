@@ -9,6 +9,7 @@ import json
 import os
 import requests
 import pytz
+from bson.objectid import ObjectId
 
 load_dotenv()
 
@@ -41,9 +42,12 @@ def post_photolinks():
         return Response(status=403, mimetype='application/json')
     
     data = request.json
-    photolinks.insert_one(data)
-    return Response(status=200, mimetype='application/json')
-
+    photolinks_data = photolinks.find()
+    
+    if photolinks_data == "[]":
+        photolinks.insert_one(data)
+        return Response(status=200, mimetype='application/json')
+    return Response(status=400, mimetype='application/json')
 
 @app.route('/photolinks')
 def get_photolinks():
@@ -53,7 +57,47 @@ def get_photolinks():
         return Response(status=404, mimetype='application/json') 
     return Response(result, status=200, mimetype='application/json')
 
+@app.route('/photolinks/<id>', methods=['PUT'])
+def put_photolink_add(id):
+    try:
+        data = request.json
+        
+        photolinks_list = []
+        for document in photolinks.find():
+            photolinks_list.extend(document['photolinks'])
+            
+        for link in data['photolinks']:
+            photolinks_list.append(link)
 
+        photolinks.find_one_and_update({"_id": ObjectId(id)},
+                {'$set': {'photolinks': photolinks_list}})
+                
+        return Response(status=200, mimetype='application/json')
+    
+    except:    
+        return Response(status=404, mimetype='application/json')
+
+@app.route('/photolinks/delete/<id>', methods=['PUT'])
+def put_photolink_delete(id):
+    try:
+        data = request.json
+        
+        photolinks_list = []
+        for document in photolinks.find():
+            photolinks_list.extend(document['photolinks'])
+        
+        for link in data['photolinks']:
+            photolinks_list.remove(link)
+
+        
+        photolinks.find_one_and_update({"_id": ObjectId(id)},
+                {'$set': {'photolinks': photolinks_list}})
+
+        return Response(status=200, mimetype='application/json')
+    
+    except:
+        return Response(status=404, mimetype='application/json')
+    
 @app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
 def post_notification(telegram_id, city_id, city_group):
     try:
