@@ -17,9 +17,12 @@ global client
 dataBaseUrl = os.getenv("DATABASEURL")
 client = MongoClient(dataBaseUrl)
 client.server_info()
+
 db = client["Dtek"]
 settlements = db["settlements"]
 notifications = db["notifications"]
+photolinks = db['photolinks']
+
 apikey = os.getenv("APIKEY")
 
 app = Flask(__name__)
@@ -27,6 +30,29 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     return Response(status=200, mimetype='application/json')
+
+@app.route('/photolinks', methods=['POST'])
+def post_photolinks():
+    try:
+        token = request.headers['Authorization'].split(" ")
+        if not token[1] == apikey:
+            return Response(status=403, mimetype='application/json')
+    except:
+        return Response(status=403, mimetype='application/json')
+    
+    data = request.json
+    photolinks.insert_one(data)
+    return Response(status=200, mimetype='application/json')
+
+
+@app.route('/photolinks')
+def get_photolinks():
+    result = dumps(photolinks.find())
+    
+    if result == "[]":
+        return Response(status=404, mimetype='application/json') 
+    return Response(result, status=200, mimetype='application/json')
+
 
 @app.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
 def post_notification(telegram_id, city_id, city_group):
