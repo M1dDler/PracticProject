@@ -10,6 +10,8 @@ import os
 import requests
 import pytz
 from bson.objectid import ObjectId
+from Parser.chernivtsi_parser import ChernivtsiParser
+from Parser.base_parser import BaseParser
 
 load_dotenv()
 
@@ -134,7 +136,7 @@ def post_notifications():
     
     now_utc = datetime.datetime.now(pytz.UTC)
     
-    gmt2 = pytz.timezone('Etc/GMT-2')
+    gmt2 = pytz.timezone('Etc/GMT')
     now_gmt2 = now_utc.astimezone(gmt2)
     current_time = now_gmt2.strftime('%H')
     
@@ -151,7 +153,7 @@ def post_notifications():
             filter_city = [city for city in cities if city["city_id"] == x["city_id"]]
             if len(filter_city) == 0:
                 continue
-            filter_group = [group for group in filter_city[0]["groups"] if group["group"] == x["city_group"]]
+            filter_group = [group for group in filter_city[0]["groups"] if str(group["group"]) == str(x["city_group"])]
             if len(filter_group) == 0:
                 continue
             filter_schedule_current = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time]
@@ -240,8 +242,13 @@ def post():
     except:
         return Response(status=403, mimetype='application/json')
     
-    data = request.json
-    settlements.insert_one(data)
+    parse_url = 'https://oblenergo.cv.ua/shutdowns/?next'
+    groups_range = range(1, 19)
+    p = ChernivtsiParser(groups_range, parse_url)
+    schedules = p.get_schedules()
+    print(json.dumps(schedules))
+    
+    settlements.insert_one(schedules)
     return Response(status=200, mimetype='application/json')
 
 @app.route('/cities')
@@ -268,7 +275,7 @@ def get_cities_groups(city_id):
     except:
         return Response(status=404)
 
-@app.route('/cities/<city_id>/groups/<int:group_number>')
+@app.route('/cities/<city_id>/groups/<group_number>')
 def get_cities_group(city_id, group_number):
     city = dumps(settlements.find_one({"city_id" : city_id}))
     parsed_data = json.loads(city)
