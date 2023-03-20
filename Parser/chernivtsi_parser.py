@@ -3,11 +3,13 @@ import re
 
 from bs4 import BeautifulSoup
 
-from Parser.base_parser import BaseParser
+# from Parser.base_parser import BaseParser
+from base_parser import BaseParser
     
 
 class ChernivtsiParser(BaseParser):
-    city = 'chernivtsi'
+    city_name = 'Чернівці'
+    city_id = 'chernivtsi'
     transform_electricity_state = {
         'з': 'on',
         'в': 'off',
@@ -40,11 +42,13 @@ class ChernivtsiParser(BaseParser):
         
     
     def _get_actual_time(self):
-        schedule_time_html = self._soup.find_all(id='gsv_a')[0]
-        schedule_time_text = schedule_time_html.text.strip()
+        # parsing if time goest to updates normally
+        # schedule_time_html = self._soup.find_all(id='gsv_a')[0]
+        # schedule_time_text = schedule_time_html.text.strip()
 
-        time_re = re.compile(r'(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$')
-        schedule_time = time_re.search(schedule_time_text).group(0)
+        # time_re = re.compile(r'(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$')
+        # schedule_time = time_re.search(schedule_time_text).group(0)
+        schedule_time = '00:00'
 
         return schedule_time
 
@@ -56,15 +60,19 @@ class ChernivtsiParser(BaseParser):
         groups_rows = list()
 
         for group_number in self.groups_range:
-            row = self._soup.find('div', {'data-id': group_number})
+            group_number_str = str(group_number)
+            row = self._soup.find('div', {'data-id': group_number, 'id': 'inf' + group_number_str})
             groups_rows.append({
-                'group_number': group_number,
+                'group_number': group_number_str,
                 'row': row,
             })
         return groups_rows
     
     def _format_schedules(self, groups_rows):
-        groups_schedules = list()
+        groups_schedules = self.get_schedules_pattern(
+            city_id=self.city_id,
+            city_name=self.city_name,
+        )
     
         for group in groups_rows:
             group_number = group['group_number']
@@ -73,18 +81,18 @@ class ChernivtsiParser(BaseParser):
             formatted_states = list()
             for time, electricity_state in enumerate(electricity_states):
                 clear_state = electricity_state.text.strip()
-                formatted_state = ChernivtsiParser.transform_electricity_state[clear_state]
+                formatted_state = self.transform_electricity_state[clear_state]
 
-                formatted_states.append({
-                    'time': time,
-                    'light': formatted_state,
-                })
+                formatted_states.append(self.get_states_pattern(
+                    time=time,
+                    electricity_state=formatted_state,
+                ))
                 
-            groups_schedules.append({
-                'group': group_number,
-                'last_update': self.last_update,
-                'schedule': formatted_states,
-            })
+            groups_schedules['groups'].append(self.get_groups_pattern(
+                group_number=group_number,
+                last_update=self.last_update,
+                schedule=formatted_states,
+            ))
         return groups_schedules
         
     def get_schedules(self):
@@ -96,12 +104,12 @@ class ChernivtsiParser(BaseParser):
 
 
 
-# if __name__ == '__main__':
-#     from pprint import pprint
+if __name__ == '__main__':
+    from pprint import pprint
 
-#     parse_url = 'https://oblenergo.cv.ua/shutdowns/?next'
-#     groups_range = range(1, 19)
+    parse_url = 'https://oblenergo.cv.ua/shutdowns/?next'
+    groups_range = range(1, 19)
 
-#     p = ChernivtsiParser(groups_range, parse_url)
-#     schedules = p.get_schedules()
-#     pprint(schedules)
+    p = ChernivtsiParser(groups_range, parse_url)
+    schedules = p.get_schedules()
+    pprint(schedules)

@@ -26,3 +26,26 @@ class BaseParser:
 
     def get_schedules(self):
         raise NotImplementedError
+    
+    def get_schedules_pattern(self, city_id=None, city_name=None):
+        schedules_pattern = {
+            'city_id': city_id,
+            'city_name': city_name,
+            'groups': list(),
+        }
+        return schedules_pattern
+    
+    def get_states_pattern(self, time=None, electricity_state=None):
+        groups_pattern = {
+            'time': time,
+            'light': electricity_state,
+        }
+        return groups_pattern
+
+    def get_groups_pattern(self, group_number=None, last_update=None, schedule=None):
+        groups_pattern = {
+            'group': group_number,
+            'last_update': last_update,
+            'schedule': schedule,
+        }
+        return groups_pattern
