@@ -145,6 +145,21 @@ def post_notifications():
 
     current_time = int(current_time)
     
+
+    messages = {
+        'on': {
+            'off': "❌ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається відключення електроенергії😢",
+            'maybe': "⚠️❌ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається можливе виключення електроенергії 😏",
+        },
+        'off': {
+            'on': "✅ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається включення електроенергії 😊",
+            'maybe': "⚠️✅ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається можливе включення електроенергії 😇",
+        },
+        'maybe': {
+            'on': "✅ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається 100%-ва подача електроенергії 😁",
+            'off': "❌ Увага, через годину в м.{city_name}, в {group_number}-ій черзі передбачається відключення електроенергії😢",
+        },
+    }
     
     for x in result:
         try:
@@ -165,26 +180,17 @@ def post_notifications():
                 filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == current_time + 1]
             else:
                 filter_schedule = [schedule for schedule in filter_group[0]["schedule"] if schedule["time"] == 0]
-                
             
-            if filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "off":
-                text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
-            
-            elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "on":
-                text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається включення електроенергії 😊")
+            current_schedule = filter_schedule_current[0]["light"]
+            future_schedule = filter_schedule[0]["light"]
+            city_name = filter_city[0]["city_name"]
+            group_number = str(filter_group[0]["group"])
 
-            elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "on":
-                text = ("✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається 100%-ва подача електроенергії 😁")
-            
-            elif filter_schedule_current[0]["light"] == "on" and filter_schedule[0]["light"] == "maybe":
-                text = "⚠️❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе виключення електроенергії 😏"
-                
-            elif filter_schedule_current[0]["light"] == "off" and filter_schedule[0]["light"] == "maybe":
-                text = "⚠️✅ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається можливе включення електроенергії 😇"
-            
-            elif filter_schedule_current[0]["light"] == "maybe" and filter_schedule[0]["light"] == "off":
-                text = ("❌ Увага, через годину в м."+filter_city[0]["city_name"]+", в "+str(filter_group[0]["group"])+"-ій черзі передбачається відключення електроенергії😢")
-                
+            text = messages[current_schedule][future_schedule].format(
+                city_name=city_name,
+                group_number=group_number,
+            )
+
             data = {
                     "chat_id": x["telegram_id"],
                     "text": text
