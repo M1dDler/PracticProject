@@ -4,6 +4,7 @@ import re
 from bs4 import BeautifulSoup
 
 # from Parser.base_parser import BaseParser
+
 from Parser.base_parser import BaseParser
     
 

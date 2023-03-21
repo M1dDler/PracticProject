@@ -48,4 +48,5 @@ class BaseParser:
             'time': time,
             'light': electricity_state,
         }
+        
         return groups_pattern
