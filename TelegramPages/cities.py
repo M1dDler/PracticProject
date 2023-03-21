@@ -94,19 +94,20 @@ async def show_schedule_on(bot, query):
     text_schedule = text_schedule.split("\n")
     text = ""
     
-    for period_of_time in text_schedule:
-        text += "⚡️ Черга №" + str(text_schedule.index(period_of_time)+1) + ":\n" 
-        period_of_time = period_of_time.split("=")
-        for x in period_of_time:
+    is_schedule = False
+    for period_of_time in range (len(text_schedule)):
+        text += "⚡️ Черга №" + str(period_of_time+1) + ":\n" 
+        text_schedule[period_of_time] = text_schedule[period_of_time].split("=")
+        for x in text_schedule[period_of_time]:
             if not x == '':
                 mass = [int(i) for i in x.split()]
                 mass.append(mass[len(mass)-1]+1)
+                is_schedule = True
                 text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
     
-    
-    text_message = ('<b>✅ Погодинний розклад подачі електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
-    
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
+    if is_schedule:
+        text_message = ('<b>✅ Погодинний розклад подачі електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+        await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
     
     
     
@@ -137,19 +138,21 @@ async def show_schedule_maybe(bot, query):
     text_schedule = text_schedule.split("\n")
     text = ""
     
-    for period_of_time in text_schedule:
-        text += "⚡️ Черга №" + str(text_schedule.index(period_of_time)+1) + ":\n" 
-        period_of_time = period_of_time.split("=")
-        for x in period_of_time:
+    
+    for period_of_time in range (len(text_schedule)):
+        text += "⚡️ Черга №" + str(period_of_time+1) + ":\n" 
+        text_schedule[period_of_time] = text_schedule[period_of_time].split("=")
+        is_schedule = False
+        for x in text_schedule[period_of_time]:
             if not x == '':
                 mass = [int(i) for i in x.split()]
                 mass.append(mass[len(mass)-1]+1)
+                is_schedule = True
                 text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
-                
-    
-    text_message = ('<b>⚠️ Погодинний розклад можливого включення/виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
-    
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
+        
+    if is_schedule:
+        text_message = ('<b>⚠️ Погодинний розклад можливого включення/виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+        await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
     
     
     
@@ -180,16 +183,17 @@ async def show_schedule_off(bot, query):
     text_schedule = text_schedule.split("\n")
     text = ""
     
-    for period_of_time in text_schedule:
-        text += "⚡️ Черга №" + str(text_schedule.index(period_of_time)+1) + ":\n" 
-        period_of_time = period_of_time.split("=")
-        for x in period_of_time:
+    is_schedule = False
+    for period_of_time in range (len(text_schedule)):
+        text += "⚡️ Черга №" + str(period_of_time+1) + ":\n" 
+        text_schedule[period_of_time] = text_schedule[period_of_time].split("=")
+        for x in text_schedule[period_of_time]:
             if not x == '':
                 mass = [int(i) for i in x.split()]
                 mass.append(mass[len(mass)-1]+1)
+                is_schedule = True
                 text += "⏱ " + str(mass[0]) + " - " + str(mass[len(mass)-1]) + "\n"
         
-    
-    text_message = ('<b>❌ Погодинний розклад виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
-    
-    await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)
+    if is_schedule:
+        text_message = ('<b>❌ Погодинний розклад виключення електроенергії для м.'+city_name+'🇺🇦:</b>\n' + text)
+        await bot.send_message(query.from_user.id, text_message, parse_mode='HTML', timeout=30)

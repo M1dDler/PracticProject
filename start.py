@@ -1,7 +1,6 @@
-import telebot
 import asyncio
 import os
-from API.api import keep_alive
+from API.app import keep_alive
 from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
 from TelegramPages.mainpage import *
@@ -64,21 +63,10 @@ async def balance_calldata(query):
         city = getCityById(city_id)
         
         markup = types.InlineKeyboardMarkup(row_width=1)
-        one_btn = types.InlineKeyboardButton("1️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_1")
-        two_btn = types.InlineKeyboardButton("2️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_2")
-        three_btn = types.InlineKeyboardButton("3️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_3")
-        four_btn = types.InlineKeyboardButton("4️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_4")
-        five_btn = types.InlineKeyboardButton("5️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_5")
-        six_btn = types.InlineKeyboardButton("6️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_6")
-        seven_btn = types.InlineKeyboardButton("7️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_7")
-        eight_btn = types.InlineKeyboardButton("8️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_8")
-        nine_btn = types.InlineKeyboardButton("9️⃣", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_9")
-        ten_btn = types.InlineKeyboardButton("🔟", callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_10")
         
-        list_buttons = [one_btn, two_btn, three_btn, four_btn, five_btn, six_btn, seven_btn, eight_btn, nine_btn, ten_btn]
         row_buttons = []
         for x in range(len(city['groups'])):
-            row_buttons.append(list_buttons[x])
+            row_buttons.append(types.InlineKeyboardButton(str(x+1), callback_data = "group_"+str(query.from_user.id)+"_"+str(city_id)+"_"+str(x+1)))
             
         markup.row(*row_buttons)
         
@@ -98,20 +86,9 @@ async def balance_calldata(query):
         groups = (len(city['groups']))
         
         markup = types.InlineKeyboardMarkup(row_width=1)
-        one_btn = types.InlineKeyboardButton("1️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_1"))
-        two_btn = types.InlineKeyboardButton("2️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_2"))
-        three_btn = types.InlineKeyboardButton("3️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_3"))
-        four_btn = types.InlineKeyboardButton("4️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_4"))
-        five_btn = types.InlineKeyboardButton("5️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_5"))
-        six_btn = types.InlineKeyboardButton("6️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_6"))
-        seven_btn = types.InlineKeyboardButton("7️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_7"))
-        eight_btn = types.InlineKeyboardButton("8️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_8"))
-        nine_btn = types.InlineKeyboardButton("9️⃣", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_9"))
-        ten_btn = types.InlineKeyboardButton("🔟", callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_10"))
-        list_buttons = [one_btn, two_btn, three_btn, four_btn, five_btn, six_btn, seven_btn, eight_btn, nine_btn, ten_btn]
         row_buttons = []
         for x in range(groups):
-            row_buttons.append(list_buttons[x])
+            row_buttons.append(types.InlineKeyboardButton(str(x+1), callback_data = "delgroup_"+str(query.from_user.id)+"_"+str(data[2]+"_"+str(x+1))))
         
         markup.row(*row_buttons)
         
