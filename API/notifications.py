@@ -1,23 +1,22 @@
 from flask import request, Response, Blueprint
-from API.dbConnect import notifications, apikey
+from API.dbConnect import notifications
 import datetime
 import requests
 import os
 from dotenv import load_dotenv
 import pytz
 from bson.json_util import dumps
+from API.authorization import authorization
 
 load_dotenv()
 
 notification = Blueprint('notification', __name__)
 
+#Add user notification
 @notification.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
 def post_notification(telegram_id, city_id, city_group):
-    try:
-        token = request.headers['Authorization'].split(" ")
-        if not token[1] == apikey:
-            return Response(status=403, mimetype='application/json')
-    except:
+    
+    if not authorization(request.headers['Authorization']):
         return Response(status=403, mimetype='application/json')
     
     data = {
@@ -33,14 +32,11 @@ def post_notification(telegram_id, city_id, city_group):
         return Response(status=200, mimetype='application/json')
     return Response(status=406, mimetype='application/json')
 
-
+#Telegram send notifications
 @notification.route('/notifications', methods=['POST'])
 def post_notifications():
-    try:
-        token = request.headers['Authorization'].split(" ")
-        if not token[1] == apikey:
-            return Response(status=403, mimetype='application/json')
-    except:
+    
+    if not authorization(request.headers['Authorization']):
         return Response(status=403, mimetype='application/json')
         
     
@@ -120,14 +116,11 @@ def post_notifications():
 
     return Response(status=200, mimetype='application/json')
 
-
+#get user notifications from city
 @notification.route('/notifications/<int:telegram_id>/<city_id>')
 def get_user_notifications(telegram_id, city_id):
-    try:
-        token = request.headers['Authorization'].split(" ")
-        if not token[1] == apikey:
-            return Response(status=403, mimetype='application/json')
-    except:
+    
+    if not authorization(request.headers['Authorization']):
         return Response(status=403, mimetype='application/json')
     
     result = dumps(notifications.find({"telegram_id": telegram_id,
@@ -135,13 +128,11 @@ def get_user_notifications(telegram_id, city_id):
 
     return Response(result, status=200, mimetype='application/json')
 
+#delete user notification
 @notification.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['DELETE'])
 def delete_notifications(telegram_id, city_id, city_group):
-    try:
-        token = request.headers['Authorization'].split(" ")
-        if not token[1] == apikey:
-            return Response(status=403, mimetype='application/json')
-    except:
+    
+    if not authorization(request.headers['Authorization']):
         return Response(status=403, mimetype='application/json')
     
     deletedata = dumps(notifications.find({"telegram_id": telegram_id,

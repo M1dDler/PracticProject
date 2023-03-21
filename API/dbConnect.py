@@ -4,7 +4,6 @@ import os
 
 load_dotenv()
 
-apikey = os.getenv("APIKEY")
 dataBaseUrl = os.getenv("DATABASEURL")
 client = MongoClient(dataBaseUrl)
 client.server_info()
