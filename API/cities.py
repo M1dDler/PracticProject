@@ -58,5 +58,6 @@ def post():
     p = ChernivtsiParser(groups_range, parse_url)
     schedules = p.get_schedules()
     
+    settlements.find_one_and_delete({'city_id' : schedules['city_id']})
     settlements.insert_one(schedules)
     return Response(status=200, mimetype='application/json')
