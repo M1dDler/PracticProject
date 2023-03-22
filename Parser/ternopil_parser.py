@@ -6,7 +6,7 @@ from bs4 import Tag
 
 
 # from Parser.base_parser import BaseParser
-from Parser.base_parser import BaseParser
+from base_parser import BaseParser
 
 class TernopilParser(BaseParser):
     city_name = 'Тернопіль'
@@ -64,7 +64,7 @@ class TernopilParser(BaseParser):
 
     def get_current_time(self):
         time_zone = pytz.timezone('Europe/Kyiv')
-        currnet_time = datetime.now(time_zone)
+        currnet_time = datetime.now(time_zone)            
         return currnet_time
 
     def get_current_weekday(self, time):
@@ -75,13 +75,13 @@ class TernopilParser(BaseParser):
         # weekday = weekday.strip().lower()
         weekday = weekday.strip()
         days = {
-            "monday": "понеділок",
-            "tuesday": "вівторок",
-            "wednesday": "середа",
-            "thursday": "четвер",
-            "friday": "п'ятниця",
-            "saturday": "субота",
-            "sunday": "неділя"
+            "Monday": "понеділок",
+            "Tuesday": "вівторок",
+            "Wednesday": "cереда",
+            "Thursday": "четвер",
+            "Friday": "п'ятниця",
+            "Saturday": "субота",
+            "Sunday": "неділя",
         }
         return days.get(weekday, '')
 
@@ -109,7 +109,7 @@ class TernopilParser(BaseParser):
         return times
 
     
-    def parse(self):
+    def get_schedules(self):
         soup = self.get_soup()
         soup.prettify(formatter=lambda s: s.replace(u'\xa0', ' '))
         full_table = soup.find('tbody')
@@ -176,7 +176,9 @@ class TernopilParser(BaseParser):
             formatted_light_states.append(self.get_groups_pattern(
                 group_number=group_numbers[group_index],
                 schedule=current_states,
-                # last_update
+                last_update=current_time\
+                    .replace(hour=0, minute=0)\
+                    .strftime("%Y-%m-%d %H:%M"),
             ))
             del current_states
         
@@ -186,15 +188,11 @@ class TernopilParser(BaseParser):
         )
         schedules['groups'] = formatted_light_states
 
-        pprint(schedules)
+        return schedules
 
         
-
-
-
-
 
 if __name__ == '__main__':
     parse_url = 'https://www.toe.com.ua/index.php/hrafik-pohodynnykh-vymknen-spozhyvachiv'
     parser = TernopilParser(parse_url)
-    parser.parse()
+    parser.get_schedules()

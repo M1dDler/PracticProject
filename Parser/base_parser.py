@@ -55,7 +55,7 @@ class BaseParser:
     
     def get_groups_pattern(self, group_number=None, last_update=None, schedule=None):
         groups_pattern = {
-            'group': group_number,
+            'group': str(group_number),
             'last_update': last_update,
             'schedule': schedule,
         }
