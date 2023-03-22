@@ -44,15 +44,18 @@ def get_cities_groups(city_id):
 #Get group from city
 @city.route('/cities/<city_id>/groups/<group_number>')
 def get_cities_group(city_id, group_number):
-    city = dumps(settlements.find_one({"city_id" : city_id}))
-    parsed_data = json.loads(city)
-    groups = parsed_data['groups']
+    try:
+        city = dumps(settlements.find_one({"city_id" : city_id}))
+        parsed_data = json.loads(city)
+        groups = parsed_data['groups']
 
-    for group in groups:
-        if group['group'] == group_number:
-            return Response(json.dumps(group), status=200, mimetype='application/json')
-    return Response(status=404)
-
+        for group in groups:
+            if group['group'] == group_number:
+                return Response(json.dumps(group), status=200, mimetype='application/json')
+        return Response(status=404)
+    except:
+        return Response(status=404)
+    
 #Add city to database
 @city.route('/cities', methods=['POST'])
 def post():
