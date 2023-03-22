@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCityById
+from TelegramBot.DataBase.dbRequests import getCityById
 
 async def show_schedule(bot, query):
     power_grid = ['on', 'maybe', 'off']

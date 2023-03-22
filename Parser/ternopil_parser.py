@@ -6,7 +6,7 @@ from bs4 import Tag
 
 
 # from Parser.base_parser import BaseParser
-from base_parser import BaseParser
+from Parser.base_parser import BaseParser
 
 class TernopilParser(BaseParser):
     city_name = 'Тернопіль'

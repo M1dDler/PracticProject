@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCityById, deleteNotifications
+from TelegramBot.DataBase.dbRequests import getCityById, deleteNotifications
 from telebot import types
 
 async def notifyOff(bot, query, telegram_id, city_id):

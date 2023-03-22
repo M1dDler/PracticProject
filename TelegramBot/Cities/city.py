@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCities
+from TelegramBot.DataBase.dbRequests import getCities
 import pytz
 import datetime
 from telebot import types

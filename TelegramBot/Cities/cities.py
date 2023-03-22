@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCities
+from TelegramBot.DataBase.dbRequests import getCities
 
 async def cities(bot, message):
     cities = getCities()

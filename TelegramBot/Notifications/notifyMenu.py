@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCityById
+from TelegramBot.DataBase.dbRequests import getCityById
 from telebot import types
 
 async def notifyMenu(bot, query):

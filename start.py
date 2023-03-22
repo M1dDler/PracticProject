@@ -3,11 +3,11 @@ import os
 from API.app import keep_alive
 from dotenv import load_dotenv
 from telebot.async_telebot import AsyncTeleBot
-from TelegramBot.mainpage import mainpage
+from TelegramBot.BotCommands.start import mainpage
 from TelegramBot.Cities.cities import cities
 from TelegramBot.Cities.city import getCityByTitle
-from TelegramBot.Callbacks.schedule import show_schedule
-from TelegramBot.Callbacks.Notifications.notifyMenu import notifyMenu
+from TelegramBot.Callbacks.Cities.schedule import show_schedule
+from TelegramBot.Notifications.notifyMenu import notifyMenu
 from TelegramBot.Callbacks.Notifications.notifyInfo import notifyInfo
 from TelegramBot.Callbacks.Notifications.notifyOn import notifyOn, notifyOnMessage
 from TelegramBot.Callbacks.Notifications.notifyOff import notifyOff, notifyOffMessage

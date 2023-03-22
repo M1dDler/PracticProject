@@ -1,4 +1,4 @@
-from TelegramBot.dbRequests import getCityById, getNotifications
+from TelegramBot.DataBase.dbRequests import getCityById, getNotifications
 
 async def notifyInfo(bot, query, telegram_id, city_id):
     city = getCityById(city_id)    
