@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from Parser.base_parser import BaseParser
+# from base_parser import BaseParser
     
 
 class ChernivtsiParser(BaseParser):
@@ -36,7 +37,7 @@ class ChernivtsiParser(BaseParser):
 
     def _get_actual_date(self):
         date = self._soup.find('div', {'id': 'gsv'}).ul.p.text.strip()
-        date = datetime.strptime(date,"%d.%m.%Y %H:%M").strftime("%Y-%m-%d %H:%M")
+        date = datetime.strptime(date,"%d.%m.%Y").strftime("%Y-%m-%d")
         return date
     
     def _get_groups_rows(self) -> list[dict]:
