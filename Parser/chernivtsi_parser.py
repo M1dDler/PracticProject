@@ -1,7 +1,4 @@
-import requests
 import re
-
-from bs4 import BeautifulSoup
 
 # from Parser.base_parser import BaseParser
 
@@ -26,21 +23,7 @@ class ChernivtsiParser(BaseParser):
     def last_update(self):
         date = self._get_actual_date()
         time = self._get_actual_time()
-        return f'{date} {time}'
-
-    def _get_response(self):
-        response = requests.get(self.parse_url, headers=ChernivtsiParser.headers)
-
-        if not response.status_code == 200:
-            response.raise_for_status()
-        return response
-    
-    def get_soup(self):
-        response = self._get_response()
-        html_content = response.content
-        soup = BeautifulSoup(html_content, 'html.parser')
-        return soup
-        
+        return f'{date} {time}'        
     
     def _get_actual_time(self):
         # parsing if time goest to updates normally
