@@ -23,7 +23,7 @@ def getNotifications(telegram_id, city_id):
     apikey = os.getenv("APIKEY")
     
     headers = headers = {
-                "Authorization": f"API-KEY {apikey}",
+                "Bearer": apikey,
                 'Content-Type': "application/json",
             }
     
@@ -40,7 +40,7 @@ def postNotifications(telegram_id, city_id, city_group):
     apikey = os.getenv("APIKEY")
     
     headers = headers = {
-                "Authorization": f"API-KEY {apikey}",
+                "Bearer": apikey,
                 'Content-Type': "application/json",
             }
     
@@ -56,7 +56,7 @@ def deleteNotifications(telegram_id, city_id, city_group):
     apikey = os.getenv("APIKEY")
     
     headers = headers = {
-                "Authorization": f"API-KEY {apikey}",
+                "Bearer": apikey,
                 'Content-Type': "application/json",
             }
     

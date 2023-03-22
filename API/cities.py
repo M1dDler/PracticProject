@@ -5,14 +5,14 @@ import os
 import json
 from API.dbConnect import settlements
 from Parser.chernivtsi_parser import ChernivtsiParser
-from Parser.ternopil_parser import TernopilParser 
-from API.authorization import authorization
+from Parser.ternopil_parser import TernopilParser
 
 load_dotenv()
 
 city = Blueprint('city', __name__)
 parse_chernivtsi_url = os.getenv("CHERNIVTSI_PARSER_URL")
 parse_ternopil_url = os.getenv("TERNOPIL_PARSER_URL")
+apikey = os.getenv("APIKEY")
 
 #Get all cities
 @city.route('/cities')
@@ -60,7 +60,7 @@ def get_cities_group(city_id, group_number):
 @city.route('/cities', methods=['POST'])
 def post():
     
-    if not authorization(request.headers['Authorization']):
+    if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
     
     groups_range = range(1, 19)

@@ -6,17 +6,17 @@ import os
 from dotenv import load_dotenv
 import pytz
 from bson.json_util import dumps
-from API.authorization import authorization
 
 load_dotenv()
 
 notification = Blueprint('notification', __name__)
+apikey = os.getenv("APIKEY")
 
 #Add user notification
 @notification.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['POST'])
 def post_notification(telegram_id, city_id, city_group):
     
-    if not authorization(request.headers['Authorization']):
+    if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
     
     data = {
@@ -36,7 +36,7 @@ def post_notification(telegram_id, city_id, city_group):
 @notification.route('/notifications', methods=['POST'])
 def post_notifications():
     
-    if not authorization(request.headers['Authorization']):
+    if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
         
     
@@ -120,7 +120,7 @@ def post_notifications():
 @notification.route('/notifications/<int:telegram_id>/<city_id>')
 def get_user_notifications(telegram_id, city_id):
     
-    if not authorization(request.headers['Authorization']):
+    if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
     
     result = dumps(notifications.find({"telegram_id": telegram_id,
@@ -132,7 +132,7 @@ def get_user_notifications(telegram_id, city_id):
 @notification.route('/notifications/<int:telegram_id>/<city_id>/<int:city_group>', methods=['DELETE'])
 def delete_notifications(telegram_id, city_id, city_group):
     
-    if not authorization(request.headers['Authorization']):
+    if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
     
     deletedata = dumps(notifications.find({"telegram_id": telegram_id,
