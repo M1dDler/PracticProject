@@ -1,3 +1,8 @@
+import requests
+
+from bs4 import BeautifulSoup
+
+
 class BaseParser:
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0",
@@ -26,6 +31,19 @@ class BaseParser:
 
     def get_schedules(self):
         raise NotImplementedError
+
+    def _get_response(self):
+        response = requests.get(self.parse_url, headers=self.headers)
+
+        if not response.status_code == 200:
+            response.raise_for_status()
+        return response
+    
+    def get_soup(self):
+        response = self._get_response()
+        html_content = response.content
+        soup = BeautifulSoup(html_content, 'html.parser')
+        return soup
     
     def get_schedules_pattern(self, city_id=None, city_name=None):
         schedules_pattern = {
