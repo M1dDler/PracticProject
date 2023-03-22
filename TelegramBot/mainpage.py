@@ -1,5 +1,4 @@
 from telebot import types
-from telebot.async_telebot import AsyncTeleBot
 
 async def mainpage(bot, message):
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard = True)
