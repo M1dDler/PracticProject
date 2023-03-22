@@ -1,11 +1,18 @@
 from flask import request, Response, Blueprint
 from bson.json_util import dumps
+from dotenv import load_dotenv
+import os
 import json
 from API.dbConnect import settlements
 from Parser.chernivtsi_parser import ChernivtsiParser
+from Parser.ternopil_parser import TernopilParser 
 from API.authorization import authorization
 
+load_dotenv()
+
 city = Blueprint('city', __name__)
+parse_chernivtsi_url = os.getenv("CHERNIVTSI_PARSER_URL")
+parse_ternopil_url = os.getenv("TERNOPIL_PARSER_URL")
 
 #Get all cities
 @city.route('/cities')
@@ -53,10 +60,15 @@ def post():
     if not authorization(request.headers['Authorization']):
         return Response(status=403, mimetype='application/json')
     
-    parse_url = 'https://oblenergo.cv.ua/shutdowns/?next'
     groups_range = range(1, 19)
-    p = ChernivtsiParser(groups_range, parse_url)
-    schedules = p.get_schedules()
-    settlements.find_one_and_delete({'city_id' : schedules['city_id']})
-    settlements.insert_one(schedules)
+    chernivtsi = ChernivtsiParser(groups_range, parse_chernivtsi_url)
+    chernivtsi_schedules = chernivtsi.get_schedules()
+    settlements.find_one_and_delete({'city_id' : chernivtsi_schedules['city_id']})
+    settlements.insert_one(chernivtsi_schedules)
+    
+    ternopil = TernopilParser(parse_ternopil_url)
+    ternopil_schedules = ternopil.get_schedules()
+    settlements.find_one_and_delete({'city_id' : ternopil_schedules['city_id']})
+    settlements.insert_one(ternopil_schedules)
+    
     return Response(status=200, mimetype='application/json')
