@@ -34,6 +34,7 @@ class ChernivtsiParser(BaseParser):
 
     def _get_actual_date(self):
         date = self._soup.find('div', {'id': 'gsv'}).ul.p.text.strip()
+        date = date.replace('.', '-')
         return date
     
     def _get_groups_rows(self) -> list[dict]:
