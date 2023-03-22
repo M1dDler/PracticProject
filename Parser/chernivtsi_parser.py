@@ -1,7 +1,3 @@
-import re
-
-# from Parser.base_parser import BaseParser
-
 from Parser.base_parser import BaseParser
     
 

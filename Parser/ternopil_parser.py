@@ -189,10 +189,3 @@ class TernopilParser(BaseParser):
         schedules['groups'] = formatted_light_states
 
         return schedules
-
-        
-
-if __name__ == '__main__':
-    parse_url = 'https://www.toe.com.ua/index.php/hrafik-pohodynnykh-vymknen-spozhyvachiv'
-    parser = TernopilParser(parse_url)
-    parser.get_schedules()
