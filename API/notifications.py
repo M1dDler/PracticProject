@@ -49,7 +49,7 @@ def post_notifications():
     
     now_utc = datetime.datetime.now(pytz.UTC)
     
-    gmt2 = pytz.timezone('Etc/GMT')
+    gmt2 = pytz.timezone('Etc/GMT-2')
     now_gmt2 = now_utc.astimezone(gmt2)
     current_time = now_gmt2.strftime('%H')
     
