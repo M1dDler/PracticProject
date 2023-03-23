@@ -122,7 +122,7 @@ def post_notifications():
 
 #get user notifications from city
 @notification.route('/notifications/<int:telegram_id>/<city_id>')
-def get_user_notifications(telegram_id, city_id):
+def get_user_notifications(telegram_id, city_id): 
     
     if len(request.headers) == 4:
         return Response(status=403, mimetype='application/json')
