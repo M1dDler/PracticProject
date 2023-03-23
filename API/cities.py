@@ -60,6 +60,8 @@ def get_cities_group(city_id, group_number):
 @city.route('/cities', methods=['POST'])
 def post():
     
+    if len(request.headers) == 4:
+        return Response(status=403, mimetype='application/json')
     if not request.headers['Bearer'] == apikey:
         return Response(status=403, mimetype='application/json')
     
